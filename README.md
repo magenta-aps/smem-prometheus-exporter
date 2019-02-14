@@ -1,5 +1,8 @@
-# smem prometheus exporter
+# Shared Memory Prometheus Exporter
 [Prometheus](https://prometheus.io/) exporter for shared shared memory metrics via [smem](https://www.selenic.com/smem/).
+Shared memory details are picked up from the `/proc` filesystem and processed.
+
+Similar to the `mongodb_exporter` and `node_exporter` this exporter has been implemented as a standalone-service to make reuse easier across different platforms and hosts.
 
 ## Building
 ```
@@ -15,7 +18,7 @@ This downloads the latest release of smem, and configures it to be used as a pyt
 ```
 python smem_exporter.py
 ```
-Upon which a lot will be printed, ending with:
+Upon which a full smem default run will be printed, followed by:
 ```
 Starting HTTPD on 0.0.0.0:8172
 ```
@@ -32,8 +35,8 @@ smem_map{map="/usr/share/fonts/type1/gsfonts/n019063l.pfb",reading_type="vss"} 6
 ...
 # HELP smem_user Memory usage by user
 # TYPE smem_user gauge
-smem_user{reading_type="count",user="username",user_id="1000"} 62.0
-smem_user{reading_type="pss",user="username",user_id="1000"} 2.475652e+06
+smem_user{reading_type="count",user="user",user_id="1000"} 62.0
+smem_user{reading_type="pss",user="user",user_id="1000"} 2.475652e+06
 ...
 # HELP smem_system Memory usage for the system
 # TYPE smem_system gauge
@@ -42,11 +45,17 @@ smem_system{area="kernel image",reading_type="noncache"} 0.0
 ...
 # HELP smem_pid Memory usage by process
 # TYPE smem_pid gauge
-smem_pid{command="/usr/bin/dbus-daemon ...",pid="7888",reading_type="pss",user="username",user_id="1000"} 459.0
-smem_pid{command="/usr/bin/python /usr/share/virt-manager/virt-manager",pid="8610",reading_type="maps",user="username",user_id="1000"} 1245.0
+smem_pid{command="/usr/bin/dbus-daemon ...",pid="7888",reading_type="pss",user="user",user_id="1000"} 459.0
+smem_pid{command="/usr/bin/python ...",pid="8610",reading_type="maps",user="user",user_id="1000"} 1245.0
 ...
 ```
 Along with the default entries for `python` and `process`.
+
+The following metrics are provided:
+* `smem_map` exposes memory maps and shared memory regions, labeled by path and reading type.
+* `smem_user` exposes memory usage for users, labeled by user, user_id and reading type.
+* `smem_system` exposes memory areas for the system, labeled by area and reading_type.
+* `smem_pid` exposes memory usage for processes, labeled by command, pid, user, user_id and reading_type.
 
 ## Limitations
 While running as non-root smem can only query so much information from `/proc/`.
@@ -57,5 +66,6 @@ To work around this, either:
 * mount `/proc` with the gid option and add the export user to the corresponding group.
 
 ## Future considerations
-Adapt to [futurization-smem](https://github.com/necromuralist/smem)?
-Support commandline flags via argparse?
+Below follows a list of ideas for future improvements:
+* Adapt to [futurization-smem](https://github.com/necromuralist/smem)?
+* Support commandline flags via argparse?
