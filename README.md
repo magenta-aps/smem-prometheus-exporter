@@ -69,3 +69,10 @@ To work around this, either:
 Below follows a list of ideas for future improvements:
 * Adapt to [futurization-smem](https://github.com/necromuralist/smem)?
 * Support commandline flags via argparse?
+    * Support for enabling / disabling entire exporters (map, user, system, pid).
+    * Support for enabling / disabling based upon labels.
+    * Support truncating long commands with ellipsis.
+    * Support transforming long commands into just the executable name.
+      - Alternatively adding a new label just for executable name might do.
+* Utilize [Custom Collectors](https://github.com/prometheus/client_python#custom-collectors) instead of Gauge + resetting.
+    
