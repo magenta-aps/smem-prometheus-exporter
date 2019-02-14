@@ -1,3 +1,7 @@
+# Project specific ignores
+smem/*
+smem-*.tar.gz
+
 # Byte-compiled / optimized / DLL files
 __pycache__/
 *.py[cod]
